@@ -1,0 +1,73 @@
+{
+  "name": "base-ai-dispute-resolution",
+  "version": "1.0.0",
+  "description": "AI-Verified Dispute Resolution Layer on Base L2 with GenLayer Integration",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:coverage": "hardhat coverage",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "test:foundry": "forge test",
+    "test:fuzz": "forge test --fuzz-runs 10000",
+    "deploy:local": "hardhat run scripts/deploy-testnet.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy-testnet.js --network base-sepolia",
+    "deploy:mainnet": "hardhat run scripts/deploy-mainnet.js --network base",
+    "test:deployment": "hardhat run scripts/test-deployment.js --network base-sepolia",
+    "test:e2e": "hardhat run scripts/e2e-test.js --network base-sepolia",
+    "verify": "hardhat verify --network base",
+    "node": "hardhat node",
+    "clean": "hardhat clean && rm -rf out cache",
+    "genlayer:start": "node services/genLayerIntegration.js",
+    "monitor:start": "node services/monitoring.js",
+    "backend:start": "cd backend && npm start",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "subgraph:codegen": "cd subgraph && npm run codegen",
+    "subgraph:build": "cd subgraph && npm run build",
+    "subgraph:deploy": "cd subgraph && npm run deploy",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "security:slither": "slither . --config-file slither.config.json",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,sol}\""
+  },
+  "keywords": [
+    "blockchain", "ethereum", "base", "l2", "dispute-resolution",
+    "ai", "genlayer", "smart-contracts", "defi", "web3"
+  ],
+  "author": "AI Dispute Resolution Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@typechain/ethers-v6": "^0.5.0",
+    "@typechain/hardhat": "^9.0.0",
+    "chai": "^4.3.0",
+    "eslint": "^8.50.0",
+    "hardhat": "^2.19.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "prettier": "^3.0.0",
+    "prettier-plugin-solidity": "^1.2.0",
+    "solidity-coverage": "^0.8.5",
+    "typechain": "^8.3.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0",
+    "ethers": "^6.9.0",
+    "express": "^4.18.0",
+    "winston": "^3.11.0",
+    "ws": "^8.14.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

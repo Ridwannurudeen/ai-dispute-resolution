@@ -1,0 +1,23 @@
+# slither.config.json
+{
+  "detectors_to_exclude": [
+    "pragma",
+    "solc-version",
+    "naming-convention"
+  ],
+  "exclude_informational": false,
+  "exclude_low": false,
+  "exclude_medium": false,
+  "exclude_high": false,
+  "fail_on": "high",
+  "filter_paths": [
+    "node_modules",
+    "test"
+  ],
+  "legacy_ast": false,
+  "exclude_dependencies": true,
+  "printers_to_run": [
+    "contract-summary",
+    "function-summary"
+  ]
+}

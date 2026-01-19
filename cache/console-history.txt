@@ -1,0 +1,99 @@
+await oracleTx.wait();
+const oracleTx = await oracle.fulfillRequest("0x413a94d1655e91849920aed902d370a8b37464723d16156361147d645b1e74dd", 1, 85, "QmVerdictReasoning");
+await tx.wait();
+const tx = await oracle.fulfillRequest("0x413a94d1655e91849920aed902d370a8b37464723d16156361147d645b1e74dd", 1, 85, "QmVerdictReasoning");
+const oracle = await ethers.getContractAt("GenLayerOracleAdapter", "0x030cfb1DC0A65144F61d0a690fFF2fBD7068e0BA");
+console.log("You:", signer.address);
+const signer = (await ethers.getSigners())[0];
+console.log("Oracle:", oracleAddr);
+const oracleAddr = await contract.genLayerOracle();
+await tx.wait();
+const tx = await contract.deliverAIVerdict("0x413a94d1655e91849920aed902d370a8b37464723d16156361147d645b1e74dd", 1, 85, "QmVerdictReasoning");
+const contract = await ethers.getContractAt("DisputeResolution", "0xad4502F3dEFec74aeCf9Ec46EED4063Ce510E1e7");
+.exit
+await verdictTx.wait();
+const verdictTx = await contract.deliverAIVerdict("0x413a94d1655e91849920aed902d370a8b37464723d16156361147d645b1e74dd", 1, 85, "QmVerdictReasoning");
+await tx.wait();
+const tx = await contract.finalizeDispute(3);
+});  confidence: d3.aiConfidenceScore.toString()  resolution: d3.resolution.toString(),  status: d3.status.toString(),console.log({
+const d3 = await contract.getDispute(3);
+await verdictTx.wait();
+const verdictTx = await contract.deliverAIVerdict("0x413a94d1655e91849920aed902d370a8b37464723d16156361147d645b1e74dd", 1, 85, "QmVerdictReasoning");
+logs;
+);  latest  latest - 10_000,  contract.filters.AIVerdictRequested(),const logs = await contract.queryFilter(
+const latest = await ethers.provider.getBlockNumber();
+);  "0xad4502F3dEFec74aeCf9Ec46EED4063Ce510E1e7"  "DisputeResolution",const contract = await ethers.getContractAt(
+console.log(logs);
+const logs = await contract.queryFilter("AIVerdictRequested");
+console.log(logs);
+const logs = await contract.queryFilter("AIVerdictRequested");
+console.log(logs);
+);  toBlock  fromBlock,  contract.filters.AIVerdictRequested(),const logs = await contract.queryFilter(
+const toBlock = latest;
+const fromBlock = latest - 10_000;
+latest
+const latest = await ethers.provider.getBlockNumber();
+console.log(logs);
+const logs = await contract.queryFilter("AIVerdictRequested");
+console.log("Status:", d4.status.toString(), "Resolution:", d4.resolution.toString());
+const d4 = await contract.getDispute(3);
+await tx.wait();
+);  "QmVerdictReasoning"  85,  1,  reqId,const tx = await dispute.deliverAIVerdict(
+const reqId = await dispute.genLayerRequestToDispute(3);
+);  "0xad4502F3dEFec74aeCf9Ec46EED4063Ce510E1e7"  "DisputeResolution",const dispute = await ethers.getContractAt(
+await tx.wait();
+const tx = await contract.requestAIVerdict(3);
+contract.interface.forEachFunction((func) => console.log(func.name));
+console.log("Request ID:", reqId3);
+const reqId3 = await oracle.getRequestByDispute(3);
+console.log("Request ID:", reqId3);
+console.log("Request ID:", reqId3);const reqId3 = await oracle.getRequestByDispute(3);
+const reqId3 = await oracle.getRequestByDispute(3);
+oracle.interface.forEachFunction((func) => console.log(func.name));
+console.log(Object.keys(oracle.interface.functions));
+console.log("My Address:", me);
+const me = (await ethers.getSigners())[0].address;
+console.log("Oracle Owner:", oracleOwner);
+const oracleOwner = await oracle.owner();
+console.log("Status:", dispute3.status.toString());
+const dispute3 = await contract.getDispute(3);
+);  "QmVerdictReasoning"  85,  // confidence  1,   // resolution  verdictRequestId,const tx5 = await dispute.deliverAIVerdict(
+verdictRequestId
+);  ethers.toUtf8Bytes("dispute-3-ai-verdict-final")const verdictRequestId = ethers.keccak256(
+);  "QmVerdictReasoning"  85,          // confidence  1,           // resolution  requestId,   // bytes32 request / dispute referenceconst tx4 = await dispute.deliverAIVerdict(
+requestId
+);  "0xad4502F3dEFec74aeCf9Ec46EED4063Ce510E1e7"  "DisputeResolution",const dispute = await ethers.getContractAt(
+await tx4.wait();
+const tx4 = await oracle.deliverVerdict(reqId, 3, 1, 85, "QmVerdictReasoning");
+await tx3.wait();
+const tx3 = await oracle.deliverVerdict(reqId, 3, 1, 85, "QmVerdictReasoning");
+console.log("Request ID:", reqId);
+const reqId = ethers.keccak256(ethers.toUtf8Bytes("dispute-3-verdict"));
+console.log("Request ID:", requestId);
+const requestId = ethers.keccak256(ethers.toUtf8Bytes("dispute-3-verdict"));
+console.log("Request ID:", requestId);
+const requestId = await oracle.disputeToRequest(3);
+const oracle = await ethers.getContractAt("GenLayerOracleAdapter", "0x030cfb1DC0A65144F61d0a690fFF2fBD7068e0BA");
+await tx3.wait();
+const tx3 = await contract.deliverAIVerdict(3, 1, 85, "QmVerdictReasoning");
+const d3 = await contract.getDispute(3); console.log("Status:", d3.status.toString());
+await tx2.wait();
+const tx2 = await contract.requestAIVerdict(3);
+await tx.wait();
+const tx = await contract.submitEvidence(3, "QmClaimantEvidence456", 0);
+const s = await ethers.getSigners(); console.log(s[0].address);
+const contract = await ethers.getContractAt("DisputeResolution", "0xad4502F3dEFec74aeCf9Ec46EED4063Ce510E1e7");
+.exit
+const s = await ethers.getSigners(); console.log(s[0].address);
+await tx2.wait();
+const tx2 = await contract.submitEvidence(3, "QmRespondentEvidence123", 0);
+const d3 = await contract.getDispute(3); console.log("Status:", d3.status.toString());
+const d = await contract.getDispute(3); console.log("Status:", d.status.toString());
+await tx.wait();
+const tx = await contract.acceptDispute(3, { value: ethers.parseEther("0.002") });
+console.log(signers[0].address);
+const signers = await ethers.getSigners();
+const d = await contract.getDispute(3); console.log("Amount:", d.amount.toString(), "Respondent:", d.respondent, "Status:", d.status.toString());
+await contract.getDisputeCount();
+);  "0xad4502F3dEFec74aeCf9Ec46EED4063Ce510E1e7"  "DisputeResolution",const contract = await ethers.getContractAt(
+await contract.getDisputeCount();

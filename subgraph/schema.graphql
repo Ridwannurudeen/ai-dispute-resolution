@@ -1,0 +1,205 @@
+# Subgraph Schema for AI Dispute Resolution
+# This defines the entities that will be indexed by The Graph
+
+type Protocol @entity {
+  id: ID!
+  totalDisputes: BigInt!
+  activeDisputes: BigInt!
+  resolvedDisputes: BigInt!
+  cancelledDisputes: BigInt!
+  totalValueLocked: BigInt!
+  totalVolumeProcessed: BigInt!
+  totalPlatformFees: BigInt!
+  averageResolutionTime: BigInt!
+  averageConfidenceScore: BigInt!
+  disputesByCategory: [CategoryStat!]! @derivedFrom(field: "protocol")
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type CategoryStat @entity {
+  id: ID!
+  protocol: Protocol!
+  category: DisputeCategory!
+  count: BigInt!
+  totalValue: BigInt!
+  resolvedCount: BigInt!
+  claimantWins: BigInt!
+  respondentWins: BigInt!
+  splits: BigInt!
+  dismissed: BigInt!
+}
+
+type User @entity {
+  id: ID! # wallet address
+  disputesAsClaimant: [Dispute!]! @derivedFrom(field: "claimant")
+  disputesAsRespondent: [Dispute!]! @derivedFrom(field: "respondent")
+  evidenceSubmitted: [Evidence!]! @derivedFrom(field: "submitter")
+  totalDisputes: BigInt!
+  disputesWon: BigInt!
+  disputesLost: BigInt!
+  totalValueDisputed: BigInt!
+  totalValueWon: BigInt!
+  totalValueLost: BigInt!
+  reputation: BigInt!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Dispute @entity {
+  id: ID! # dispute ID
+  disputeId: BigInt!
+  claimant: User!
+  respondent: User!
+  amount: BigInt!
+  totalPool: BigInt!
+  category: DisputeCategory!
+  status: DisputeStatus!
+  resolution: Resolution!
+  descriptionHash: String!
+  aiConfidenceScore: Int!
+  appealed: Boolean!
+  
+  # Timestamps
+  createdAt: BigInt!
+  acceptedAt: BigInt
+  evidenceDeadline: BigInt!
+  verdictRequestedAt: BigInt
+  verdictDeliveredAt: BigInt
+  appealDeadline: BigInt
+  appealedAt: BigInt
+  resolvedAt: BigInt
+  cancelledAt: BigInt
+  
+  # Payouts
+  claimantPayout: BigInt
+  respondentPayout: BigInt
+  platformFee: BigInt
+  
+  # Relations
+  evidence: [Evidence!]! @derivedFrom(field: "dispute")
+  aiVerdict: AIVerdict @derivedFrom(field: "dispute")
+  appeal: Appeal @derivedFrom(field: "dispute")
+  events: [DisputeEvent!]! @derivedFrom(field: "dispute")
+  
+  # Metadata
+  transactionHash: Bytes!
+  blockNumber: BigInt!
+}
+
+type Evidence @entity {
+  id: ID! # dispute-evidenceIndex
+  dispute: Dispute!
+  submitter: User!
+  contentHash: String!
+  evidenceType: EvidenceType!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+  blockNumber: BigInt!
+}
+
+type AIVerdict @entity {
+  id: ID! # disputeId
+  dispute: Dispute!
+  decision: Resolution!
+  confidenceScore: Int!
+  reasoningHash: String!
+  genLayerRequestId: Bytes!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+  blockNumber: BigInt!
+}
+
+type Appeal @entity {
+  id: ID! # disputeId
+  dispute: Dispute!
+  appealer: User!
+  stakeAmount: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+  blockNumber: BigInt!
+}
+
+type DisputeEvent @entity {
+  id: ID! # txHash-logIndex
+  dispute: Dispute!
+  eventType: EventType!
+  timestamp: BigInt!
+  data: String # JSON encoded event-specific data
+  transactionHash: Bytes!
+  blockNumber: BigInt!
+  logIndex: BigInt!
+}
+
+type DailyStats @entity {
+  id: ID! # date timestamp
+  date: BigInt!
+  disputesCreated: BigInt!
+  disputesResolved: BigInt!
+  disputesCancelled: BigInt!
+  evidenceSubmitted: BigInt!
+  verdictsDelivered: BigInt!
+  appeals: BigInt!
+  volumeCreated: BigInt!
+  volumeResolved: BigInt!
+  platformFees: BigInt!
+  uniqueUsers: BigInt!
+}
+
+type HourlyStats @entity {
+  id: ID! # hour timestamp
+  hour: BigInt!
+  disputesCreated: BigInt!
+  disputesResolved: BigInt!
+  evidenceSubmitted: BigInt!
+  volumeCreated: BigInt!
+}
+
+# Enums
+enum DisputeCategory {
+  ContractBreach
+  ServiceQuality
+  PaymentDispute
+  IntellectualProperty
+  FraudClaim
+  Other
+}
+
+enum DisputeStatus {
+  Created
+  EvidenceSubmission
+  AwaitingAIVerdict
+  VerdictDelivered
+  AppealPeriod
+  Resolved
+  Cancelled
+}
+
+enum Resolution {
+  None
+  FavorClaimant
+  FavorRespondent
+  Split
+  Dismissed
+}
+
+enum EvidenceType {
+  Document
+  Image
+  Video
+  Contract
+  Communication
+  Transaction
+  Other
+}
+
+enum EventType {
+  Created
+  Accepted
+  EvidenceSubmitted
+  VerdictRequested
+  VerdictReceived
+  Appealed
+  Resolved
+  Cancelled
+}

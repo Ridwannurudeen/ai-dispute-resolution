@@ -1,0 +1,68 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: DisputeResolution
+    network: base
+    source:
+      address: "0x0000000000000000000000000000000000000000" # Replace with deployed address
+      abi: DisputeResolution
+      startBlock: 0 # Replace with deployment block
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - User
+        - Dispute
+        - Evidence
+        - AIVerdict
+        - Appeal
+        - DisputeEvent
+        - DailyStats
+        - HourlyStats
+        - CategoryStat
+      abis:
+        - name: DisputeResolution
+          file: ./abis/DisputeResolution.json
+      eventHandlers:
+        - event: DisputeCreated(indexed uint256,indexed address,indexed address,uint256,uint8)
+          handler: handleDisputeCreated
+        - event: EvidenceSubmitted(indexed uint256,indexed address,string,uint8)
+          handler: handleEvidenceSubmitted
+        - event: AIVerdictRequested(indexed uint256,indexed bytes32)
+          handler: handleAIVerdictRequested
+        - event: AIVerdictReceived(indexed uint256,uint8,uint8)
+          handler: handleAIVerdictReceived
+        - event: DisputeAppealed(indexed uint256,indexed address,uint256)
+          handler: handleDisputeAppealed
+        - event: DisputeResolved(indexed uint256,uint8,uint256,uint256)
+          handler: handleDisputeResolved
+        - event: DisputeCancelled(indexed uint256)
+          handler: handleDisputeCancelled
+      file: ./src/mapping.ts
+
+  - kind: ethereum
+    name: EvidenceManager
+    network: base
+    source:
+      address: "0x0000000000000000000000000000000000000000" # Replace with deployed address
+      abi: EvidenceManager
+      startBlock: 0 # Replace with deployment block
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Evidence
+      abis:
+        - name: EvidenceManager
+          file: ./abis/EvidenceManager.json
+      eventHandlers:
+        - event: EvidenceSubmitted(indexed uint256,indexed uint256,indexed address,string,uint8)
+          handler: handleEvidenceManagerSubmitted
+        - event: EvidenceVerified(indexed uint256,uint8,address)
+          handler: handleEvidenceVerified
+      file: ./src/evidence-mapping.ts

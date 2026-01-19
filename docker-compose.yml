@@ -1,0 +1,180 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Smart Contract Development
+  hardhat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.hardhat
+    volumes:
+      - ./contracts:/app/contracts
+      - ./scripts:/app/scripts
+      - ./test:/app/test
+      - ./artifacts:/app/artifacts
+      - ./cache:/app/cache
+    ports:
+      - "8545:8545"
+    command: npx hardhat node
+    networks:
+      - dispute-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - BASE_RPC_URL=${BASE_RPC_URL}
+      - DISPUTE_CONTRACT_ADDRESS=${DISPUTE_CONTRACT_ADDRESS}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_URI=mongodb://mongo:27017/disputes
+    ports:
+      - "4000:4000"
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - dispute-network
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.frontend
+      args:
+        - VITE_CONTRACT_ADDRESS=${DISPUTE_CONTRACT_ADDRESS}
+        - VITE_API_URL=http://localhost:4000
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - dispute-network
+    restart: unless-stopped
+
+  # GenLayer Integration Service
+  genlayer-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.services
+    environment:
+      - BASE_RPC_URL=${BASE_RPC_URL}
+      - DISPUTE_CONTRACT_ADDRESS=${DISPUTE_CONTRACT_ADDRESS}
+      - ORACLE_ADAPTER_ADDRESS=${ORACLE_ADAPTER_ADDRESS}
+      - GENLAYER_ENDPOINT=${GENLAYER_ENDPOINT}
+      - GENLAYER_API_KEY=${GENLAYER_API_KEY}
+      - RELAYER_PRIVATE_KEY=${RELAYER_PRIVATE_KEY}
+    command: node services/genLayerIntegration.js
+    depends_on:
+      - redis
+    networks:
+      - dispute-network
+    restart: unless-stopped
+
+  # Monitoring Service
+  monitoring:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.services
+    environment:
+      - BASE_RPC_URL=${BASE_RPC_URL}
+      - DISPUTE_CONTRACT_ADDRESS=${DISPUTE_CONTRACT_ADDRESS}
+      - HTTP_PORT=3001
+      - WS_PORT=3002
+    command: node services/monitoring.js
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+    networks:
+      - dispute-network
+    restart: unless-stopped
+
+  # Redis (caching & pub/sub)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - dispute-network
+    restart: unless-stopped
+
+  # MongoDB (persistence)
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=disputes
+    networks:
+      - dispute-network
+    restart: unless-stopped
+
+  # The Graph Node (optional - for subgraph)
+  graph-node:
+    image: graphprotocol/graph-node
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8020:8020"
+      - "8030:8030"
+      - "8040:8040"
+    depends_on:
+      - ipfs
+      - postgres
+    environment:
+      postgres_host: postgres
+      postgres_user: graph-node
+      postgres_pass: let-me-in
+      postgres_db: graph-node
+      ipfs: 'ipfs:5001'
+      ethereum: 'base:${BASE_RPC_URL}'
+      GRAPH_LOG: info
+    networks:
+      - dispute-network
+    profiles:
+      - subgraph
+
+  # IPFS (for subgraph)
+  ipfs:
+    image: ipfs/kubo:v0.14.0
+    ports:
+      - "5001:5001"
+    volumes:
+      - ipfs-data:/data/ipfs
+    networks:
+      - dispute-network
+    profiles:
+      - subgraph
+
+  # PostgreSQL (for subgraph)
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_DB: graph-node
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - dispute-network
+    profiles:
+      - subgraph
+
+networks:
+  dispute-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  mongo-data:
+  ipfs-data:
+  postgres-data:
